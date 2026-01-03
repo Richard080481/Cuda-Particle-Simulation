@@ -1,0 +1,76 @@
+# .gitignore for Cuda-Particle-Simulation
+# Tailored for Visual Studio, CUDA, and common build artifacts
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.opendb
+
+# Visual C++ project user files
+*.vcxproj.user
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+build/
+cmake-build-*/
+out/
+bin/
+obj/
+
+# Common configuration directories
+.vscode/
+
+# Architecture / configuration specific folders
+**/x64/
+**/Debug/
+**/Release/
+
+# Compiled object files, libraries, debuggers and executables
+*.obj
+*.o
+*.so
+*.dll
+*.lib
+*.a
+*.exe
+*.ilk
+*.pdb
+*.ipdb
+*.exp
+
+# CUDA / generated dependency files seen in this repo
+*.deps
+*.cu*deps
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# MSBuild
+*.log
+*.tlog/
+*.lastbuildstate
+
+# Rider / ReSharper caches
+/.idea/
+*.sln.iml
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Misc
+*.cache
+*.sdf
+*.opensdf
+*.userprefs
