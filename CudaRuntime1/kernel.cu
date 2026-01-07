@@ -22,8 +22,8 @@
 #include <cmath>
 
  // --- Constants ---
-const int numParticles = 8192; // Increased for 3D
-const int gridRes = 32;    // 32x32x32 grid
+const int numParticles = 81920; // Increased for 3D
+const int gridRes = 128;    // 32x32x32 grid
 const float dt = 0.003f;
 
 struct Particle
@@ -289,6 +289,18 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     updateCamera();
 }
 
+void resetParticles(Particle* d_old, int n) {
+    std::vector<Particle> h_parts(n);
+    for (int i = 0; i < n; i++) {
+        h_parts[i].pos = { 0.0f, 0.0f, 0.0f };
+        h_parts[i].vel = { 0.0f, 0.0f, 0.0f };
+        h_parts[i].life = (float)i / n;
+        h_parts[i].fadeRate = 0.2f + (rand() % 100 / 100.0f) * 0.3f;
+    }
+    cudaMemcpy(d_old, h_parts.data(), n * sizeof(Particle), cudaMemcpyHostToDevice);
+    std::cout << "Simulation Reset!" << std::endl;
+}
+
 int main()
 {
     if (!glfwInit()) return -1;
@@ -378,6 +390,15 @@ int main()
         cudaGraphicsResourceGetMappedPointer((void**)&dv, &nb, resV);
         cudaGraphicsMapResources(1, &resC, 0);
         cudaGraphicsResourceGetMappedPointer((void**)&dc, &nb, resC);
+
+        static bool r_pressed_last_frame = false;
+        bool r_currently_pressed = (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS);
+
+        if (r_currently_pressed && !r_pressed_last_frame)
+        {
+            resetParticles(d_old, numParticles);
+        }
+        r_pressed_last_frame = r_currently_pressed;
 
         updatePhysics << <blocks, threads >> > (d_old, d_new, d_offs, d_idx, dv, dc,
             numParticles, gridRes, dt,
